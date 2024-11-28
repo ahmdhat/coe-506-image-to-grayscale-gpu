@@ -1,1 +1,3 @@
 .venv/
+*.nsys-rep
+*.sqlite
