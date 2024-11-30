@@ -41,6 +41,6 @@ def convert_to_grayscale(image_path, output_path):
         cv2.imwrite(output_path, grayscale_image)
     print(f"Grayscale image saved to {output_path}.")
 
-input_image = "input/dorina-perry-bjWeTnbb-pg-unsplash.jpg"  # Replace with the path to your input image
-output_image = "output/dorina-perry-bjWeTnbb-pg-unsplash.jpg"  # Replace with the path for the output image
+input_image = "input/4000 x 2667.jpg"  # Replace with the path to your input image
+output_image = "output/4000 x 2667.jpg"  # Replace with the path for the output image
 convert_to_grayscale(input_image, output_image)
