@@ -57,20 +57,20 @@ The script will:
 
 ```bash
 # On Linux/macOS
-gcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lm
+nvcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lnvToolsExt -lm
 
 # On Windows with MinGW
-gcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lm
+nvcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lnvToolsExt -lm
 ```
 
 2. Run the compiled program:
 
 ```bash
 # On Linux/macOS
-./img-grayscale-sequential-C
+nsys profile --stats=true ./img-grayscale-sequential-C
 
 # On Windows
-img-grayscale-sequential-C
+nsys profile --stats=true ./img-grayscale-sequential-C
 ```
 
 The C program will:
