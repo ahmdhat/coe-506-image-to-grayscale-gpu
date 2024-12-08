@@ -57,8 +57,8 @@ void convert_to_grayscale(const char *input_file, const char *output_file) {
 }
 
 int main(int argc, char *argv[]) {
-    const char *input_file = "input/4000 x 2667.jpg";
-    const char *output_file = "output/4000 x 2667.jpg";
+    const char *input_file = "input/8192 x 5464.jpg";
+    const char *output_file = "output/8192 x 5464_gr.jpg";
 
     convert_to_grayscale(input_file, output_file);
     return 0;

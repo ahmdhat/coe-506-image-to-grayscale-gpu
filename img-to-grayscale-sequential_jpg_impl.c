@@ -27,15 +27,18 @@ void convert_to_grayscale(const char *input_file, const char *output_file) {
     }
 
     // Memory map the file
-    unsigned char *file_data = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    uint8_t *file_data = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0);
     if (file_data == MAP_FAILED) {
         perror("Error: Memory mapping failed");
         close(fd);
         return;
     }
 
+    posix_madvise(file_data, sb.st_size, POSIX_MADV_SEQUENTIAL);
     close(fd); // File descriptor can be closed after mmap
+    nvtxRangePop();
 
+    nvtxRangePush("Decompress image");
     // Initialize JPEG decompression object
     struct jpeg_decompress_struct cinfo;
     struct jpeg_error_mgr jerr;
