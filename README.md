@@ -53,6 +53,7 @@ The script will:
 
 ### Compilation and Running
 
+#### Original Sequential
 1. First, compile the C program:
 
 ```bash
@@ -61,6 +62,39 @@ nvcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lnvToolsExt -l
 
 # On Windows with MinGW
 nvcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lnvToolsExt -lm
+```
+
+#### Sequential with OpenCV
+1. First, compile the C program:
+
+```bash
+# On Linux/macOS
+g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-opencv.c -lnvToolsExt -lm -ljpeg `pkg-config --cflags --libs opencv4`
+
+# On Windows with MinGW
+g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-opencv.c -lnvToolsExt -lm -ljpeg `pkg-config --cflags --libs opencv4`
+```
+
+#### Sequential with libjpeg-turbo
+1. First, compile the C program:
+
+```bash
+# On Linux/macOS
+g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-libjpeg-turbo.c -lnvToolsExt -lm -ljpeg
+
+# On Windows with MinGW
+g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-libjpeg-turbo.c -lnvToolsExt -lm -ljpeg
+```
+
+#### Sequential with vips
+1. First, compile the C program:
+
+```bash
+# On Linux/macOS
+gcc -o img-grayscale-sequential-C img-to-grayscale-sequential-vips.c -lnvToolsExt  -lm -x cu `pkg-config vips --cflags --libs`
+
+# On Windows with MinGW
+gcc -o img-grayscale-sequential-C img-to-grayscale-sequential-vips.c -lnvToolsExt  -lm -x cu `pkg-config vips --cflags --libs`
 ```
 
 2. Run the compiled program:
