@@ -1,7 +1,6 @@
-
 # Image to Grayscale Converter
 
-This project provides implementations of an image-to-grayscale converter in Python, C, and C with OpenACC for accelerated parallel processing. Each implementation processes the image sequentially or in parallel (OpenACC), converting RGB values to grayscale using the formula:  
+This project provides implementations of an image-to-grayscale converter in Python, CUDA Python, C, and C with OpenACC for accelerated parallel processing. Each implementation processes the image sequentially or in parallel (OpenACC/CUDA), converting RGB values to grayscale using the formula:  
 **Y' = 0.299R + 0.587G + 0.114B**
 
 ---
@@ -48,6 +47,42 @@ The script will:
 - Convert it to grayscale
 - Save the result to `output/dorina-perry-bjWeTnbb-pg-unsplash.jpg`
 - Display processing time and image dimensions
+
+---
+
+## CUDA Python Implementation
+
+### Prerequisites
+- Python 3.6 or higher
+- OpenCV (cv2)
+- NumPy
+- Numba with CUDA support
+
+### Setup Environment
+
+1. Install Numba:
+
+   ```bash
+   pip install numba
+   ```
+
+2. Ensure a CUDA-compatible GPU is installed and the necessary drivers are configured.
+
+### Running the CUDA Python Version
+
+1. Ensure you have an image in the `input` directory.
+2. Create an `output` directory if it doesn't exist.
+3. Run the script:
+
+   ```bash
+   python grayscale_cuda.py
+   ```
+
+The script will:
+- Load the image from `input/8192x5464.jpg`
+- Convert it to grayscale using GPU parallelization
+- Save the result to `output/8192x5464_cuda_py_num.jpg`
+- Print profiling information for each step (loading, transfer, kernel execution, etc.)
 
 ---
 
@@ -131,6 +166,7 @@ Ensure the following directory structure:
 .
 ├── input/                      # Place your input images here
 ├── output/                     # Grayscale images will be saved here
+├── grayscale_cuda.py           # CUDA Python implementation
 ├── img-to-grayscale-sequential.py
 ├── img-to-grayscale-sequential.c
 ├── img-to-grayscale-opencv.c
@@ -152,7 +188,14 @@ To use different images:
    output_image = "output/your-output.jpg"
    ```
 
-2. **In C/OpenACC versions** - modify these lines in `main()`:
+2. **In CUDA Python version** - modify these lines at the bottom of the script:
+
+   ```python
+   input_image = "input/your-image.jpg"
+   output_image = "output/your-output.jpg"
+   ```
+
+3. **In C/OpenACC versions** - modify these lines in `main()`:
 
    ```c
    const char *input_file = "input/your-image.jpg";
@@ -160,5 +203,3 @@ To use different images:
    ```
 
 ---
-
-This updated README now includes instructions for using the OpenACC implementation alongside the existing Python and C implementations. Let me know if you need additional details or adjustments!
