@@ -1,6 +1,10 @@
+
 # Image to Grayscale Converter
 
-This project provides implementations of an image to grayscale converter in both Python and C. Each implementation processes the image sequentially, converting RGB values to grayscale using the formula: Y' = 0.299R + 0.587G + 0.114B.
+This project provides implementations of an image-to-grayscale converter in Python, C, and C with OpenACC for accelerated parallel processing. Each implementation processes the image sequentially or in parallel (OpenACC), converting RGB values to grayscale using the formula:  
+**Y' = 0.299R + 0.587G + 0.114B**
+
+---
 
 ## Python Implementation
 
@@ -13,21 +17,21 @@ This project provides implementations of an image to grayscale converter in both
 
 1. Create and activate a virtual environment (recommended):
 
-```bash
-# On Windows
-python -m venv .venv
-.venv\Scripts\activate
+   ```bash
+   # On Windows
+   python -m venv .venv
+   .venv\Scripts\activate
 
-# On macOS/Linux
-python -m venv .venv
-. .venv/bin/activate
-```
+   # On macOS/Linux
+   python -m venv .venv
+   . .venv/bin/activate
+   ```
 
 2. Install required packages:
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ### Running the Python Version
 
@@ -35,9 +39,9 @@ pip install -r requirements.txt
 2. Create an `output` directory if it doesn't exist.
 3. Run the script:
 
-```bash
-python img-to-grayscale-sequential.py
-```
+   ```bash
+   python img-to-grayscale-sequential.py
+   ```
 
 The script will:
 - Load the image from `input/dorina-perry-bjWeTnbb-pg-unsplash.jpg`
@@ -45,75 +49,83 @@ The script will:
 - Save the result to `output/dorina-perry-bjWeTnbb-pg-unsplash.jpg`
 - Display processing time and image dimensions
 
+---
+
 ## C Implementation
 
 ### Prerequisites
-- GCC compiler
+- GCC or NVCC compiler
+- OpenCV library
 - stb_image.h and stb_image_write.h (already included in the project)
 
 ### Compilation and Running
 
 #### Original Sequential
-1. First, compile the C program:
+1. Compile the C program:
 
-```bash
-# On Linux/macOS
-nvcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lnvToolsExt -lm
-
-# On Windows with MinGW
-nvcc -o img-grayscale-sequential-C img-to-grayscale-sequential.c -lnvToolsExt -lm
-```
-
-#### Sequential with OpenCV
-1. First, compile the C program:
-
-```bash
-# On Linux/macOS
-g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-opencv.c -lnvToolsExt -lm -ljpeg `pkg-config --cflags --libs opencv4`
-
-# On Windows with MinGW
-g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-opencv.c -lnvToolsExt -lm -ljpeg `pkg-config --cflags --libs opencv4`
-```
-
-#### Sequential with libjpeg-turbo
-1. First, compile the C program:
-
-```bash
-# On Linux/macOS
-g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-libjpeg-turbo.c -lnvToolsExt -lm -ljpeg
-
-# On Windows with MinGW
-g++ -O2 -o img-grayscale-sequential-C img-to-grayscale-sequential-libjpeg-turbo.c -lnvToolsExt -lm -ljpeg
-```
-
-#### Sequential with vips
-1. First, compile the C program:
-
-```bash
-# On Linux/macOS
-gcc -o img-grayscale-sequential-C img-to-grayscale-sequential-vips.c -lnvToolsExt  -lm -x cu `pkg-config vips --cflags --libs`
-
-# On Windows with MinGW
-gcc -o img-grayscale-sequential-C img-to-grayscale-sequential-vips.c -lnvToolsExt  -lm -x cu `pkg-config vips --cflags --libs`
-```
+   ```bash
+   gcc -o img-grayscale-sequential img-to-grayscale-sequential.c -lm
+   ```
 
 2. Run the compiled program:
 
-```bash
-# On Linux/macOS
-nsys profile --stats=true ./img-grayscale-sequential-C
+   ```bash
+   ./img-grayscale-sequential
+   ```
 
-# On Windows
-nsys profile --stats=true ./img-grayscale-sequential-C
-```
+#### Sequential with OpenCV
+1. Compile the C program:
 
-The C program will:
-- Read the input image from `input/dorina-perry-bjWeTnbb-pg-unsplash.jpg`
-- Convert it to grayscale
-- Save the result as PNG to `output/dorina-perry-bjWeTnbb-pg-unsplash.jpg`
+   ```bash
+   g++ -O2 -o img-grayscale-opencv img-to-grayscale-opencv.c `pkg-config --cflags --libs opencv4`
+   ```
 
-### Directory Structure
-Ensure you have the following directory structure:
+2. Run the compiled program:
+
+   ```bash
+   ./img-grayscale-opencv
+   ```
+
+---
+
+## OpenACC Implementation
+
+### Prerequisites
+- GCC or NVCC compiler with OpenACC support
+- OpenCV library
+- NVTX library for profiling
+
+### Compilation and Running
+
+1. Compile the OpenACC-enabled program:
+
+   ```bash
+   g++ -o img-grayscale-openacc img-to-grayscale-openacc.c -fopenacc -lm `pkg-config --cflags --libs opencv4`
+   ```
+
+2. Run the program:
+
+   ```bash
+   ./img-grayscale-openacc
+   ```
+
+### Features
+- Uses OpenACC directives for GPU acceleration.
+- Transfers data between CPU and GPU for efficient processing.
+- Outputs grayscale image to the `output` directory.
+
+### Example Output
+The OpenACC program will:
+- Load the input image from `input/8192x5464.jpg`.
+- Convert it to grayscale using GPU parallelization.
+- Save the result to `output/8192x5464_grayscale.jpg`.
+- Print profiling information for kernel execution.
+
+---
+
+## Directory Structure
+
+Ensure the following directory structure:
 
 ```plaintext
 .
@@ -121,23 +133,32 @@ Ensure you have the following directory structure:
 ├── output/                     # Grayscale images will be saved here
 ├── img-to-grayscale-sequential.py
 ├── img-to-grayscale-sequential.c
+├── img-to-grayscale-opencv.c
+├── img-to-grayscale-openacc.c
 ├── stb_image.h
 └── stb_image_write.h
 ```
 
-### Modifying Input/Output Paths
+---
+
+## Modifying Input/Output Paths
 
 To use different images:
 
 1. **In Python version** - modify these lines at the bottom of the script:
 
-```python
-input_image = "input/your-image.jpg"
-output_image = "output/your-output.jpg"
-```
+   ```python
+   input_image = "input/your-image.jpg"
+   output_image = "output/your-output.jpg"
+   ```
 
-2. **In C version** - modify these lines in `main()`:
+2. **In C/OpenACC versions** - modify these lines in `main()`:
 
-```c
-const char *input_file = "input/your-image.jpg";
-const char *output_file = "output/your-output.jpg";
+   ```c
+   const char *input_file = "input/your-image.jpg";
+   const char *output_file = "output/your-output.jpg";
+   ```
+
+---
+
+This updated README now includes instructions for using the OpenACC implementation alongside the existing Python and C implementations. Let me know if you need additional details or adjustments!
